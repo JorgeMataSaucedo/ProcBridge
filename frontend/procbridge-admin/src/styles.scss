@@ -1,0 +1,321 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ========================================
+   MINIMALIST BLACK THEME - ProcBridge
+   ======================================== */
+
+:root {
+  /* Black Theme Colors */
+  --black-pure: #0a0a0a;
+  --black-elevated: #141414;
+  --black-sidebar: #1a1a1a;
+  --black-hover: #1f1f1f;
+
+  /* Accent Colors */
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #f59e0b;
+
+  /* Text Colors */
+  --text-primary: #e5e5e5;
+  --text-secondary: #a1a1a1;
+  --text-tertiary: #666666;
+
+  /* Border Colors */
+  --border-subtle: #2a2a2a;
+  --border-focus: #3b82f6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--black-pure);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   PRIMENG OVERRIDES
+   ======================================== */
+
+/* Cards */
+.p-card {
+  background: var(--black-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: none !important;
+  color: var(--text-primary);
+}
+
+.p-card .p-card-header {
+  background: transparent !important;
+  border: none !important;
+  padding: 1.5rem 1.5rem 0 1.5rem !important;
+}
+
+.p-card .p-card-body {
+  padding: 1.5rem !important;
+}
+
+.p-card .p-card-content {
+  padding: 0 !important;
+}
+
+/* Buttons */
+.p-button {
+  background: var(--accent-blue) !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  color: white !important;
+  font-weight: 500 !important;
+  padding: 0.625rem 1.25rem !important;
+  transition: all 0.15s ease !important;
+}
+
+.p-button:hover {
+  background: var(--accent-blue-hover) !important;
+  transform: translateY(-1px);
+}
+
+.p-button.p-button-outlined {
+  background: transparent !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+.p-button.p-button-outlined:hover {
+  background: var(--black-hover) !important;
+  border-color: var(--accent-blue) !important;
+}
+
+.p-button.p-button-success {
+  background: var(--accent-green) !important;
+}
+
+.p-button.p-button-danger {
+  background: var(--accent-red) !important;
+}
+
+.p-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Dropdowns */
+.p-dropdown {
+  background: var(--black-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+}
+
+.p-dropdown:hover {
+  border-color: var(--accent-blue) !important;
+}
+
+.p-dropdown-panel {
+  background: var(--black-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.p-dropdown-item {
+  color: var(--text-primary) !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.p-dropdown-item:hover {
+  background: var(--black-hover) !important;
+}
+
+.p-dropdown-item.p-highlight {
+  background: var(--accent-blue) !important;
+  color: white !important;
+}
+
+/* Tables */
+.p-datatable {
+  background: transparent !important;
+  border: none !important;
+}
+
+.p-datatable .p-datatable-thead>tr>th {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 1rem !important;
+}
+
+.p-datatable .p-datatable-tbody>tr {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  transition: background 0.15s ease !important;
+}
+
+.p-datatable .p-datatable-tbody>tr:hover {
+  background: var(--black-hover) !important;
+}
+
+.p-datatable .p-datatable-tbody>tr>td {
+  border: none !important;
+  color: var(--text-primary) !important;
+  padding: 1rem !important;
+}
+
+/* Paginator */
+.p-paginator {
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--text-secondary) !important;
+  min-width: 2rem !important;
+  height: 2rem !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background: var(--black-hover) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: var(--accent-blue) !important;
+  border-color: var(--accent-blue) !important;
+  color: white !important;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+.p-inputtext {
+  background: var(--black-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+  padding: 0.625rem 0.875rem !important;
+  font-family: inherit !important;
+  transition: all 0.15s ease !important;
+}
+
+input:focus,
+textarea:focus,
+.p-inputtext:focus {
+  border-color: var(--border-focus) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black-pure);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent-green);
+}
+
+.badge-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--accent-red);
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-yellow);
+}
+
+.badge-inactive {
+  background: rgba(161, 161, 161, 0.15);
+  color: var(--text-secondary);
+}
+
+code {
+  background: var(--black-elevated);
+  color: var(--accent-blue);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+/* Smooth transitions */
+button,
+a,
+input,
+.p-dropdown,
+.p-button {
+  transition: all 0.15s ease;
+}
