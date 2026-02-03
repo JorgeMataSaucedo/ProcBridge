@@ -35,7 +35,7 @@ Edita `backend/ProcBridge.API/appsettings.json`:
 
 Ajusta según tu servidor SQL.
 
-### **3. Ejecutar el API**
+### **3. Ejecutar el API (.NET)**
 
 ```bash
 cd backend/ProcBridge.API
@@ -43,62 +43,19 @@ dotnet run
 ```
 
 Verás:
-```
-✅ Building...
-✅ Now listening on: https://localhost:5001
-✅ Swagger UI: https://localhost:5001/swagger
-```
+- ✅ **API URL**: http://localhost:5194
+- ✅ **Swagger UI**: http://localhost:5194/swagger
 
-### **4. Probar en Swagger**
+### **4. Ejecutar el Frontend (Angular)**
 
-1. Abre: https://localhost:5001/swagger
-2. Expande `POST /api/execute`
-3. Click en "Try it out"
-4. Pega este JSON:
-
-```json
-{
-  "procCode": "TEST_ECHO",
-  "payload": {
-    "Message": "Hello ProcBridge!"
-  },
-  "meta": {
-    "userId": "user123",
-    "appName": "SwaggerTest"
-  }
-}
+```bash
+cd frontend/procbridge-admin
+npm install
+npm start
 ```
 
-5. Click "Execute"
-
-**Respuesta esperada:**
-
-```json
-{
-  "isOk": true,
-  "data": {
-    "resultSets": [
-      {
-        "columns": ["Message", "Timestamp", "Status"],
-        "rows": [
-          {
-            "Message": "Hello ProcBridge!",
-            "Timestamp": "2026-02-01T22:30:00",
-            "Status": "ProcBridge is working!"
-          }
-        ]
-      }
-    ]
-  },
-  "meta": {
-    "executionId": "...",
-    "procCode": "TEST_ECHO",
-    "spName": "sp_echo",
-    "durationMs": 15,
-    "executedAt": "..."
-  }
-}
-```
+Verás:
+- ✅ **App URL**: http://localhost:4200
 
 ---
 
@@ -107,29 +64,27 @@ Verás:
 ```
 ┌─────────────────────────┐
 │   Angular Frontend      │
-│   (Fase 2)              │
+│   (Diseño Minimalista)  │
 └───────────┬─────────────┘
-            │ HTTP/JSON
+            │ HTTP/JSON (Port 4200 -> 5194)
             ↓
 ┌─────────────────────────┐
 │   ProcBridge.API        │
-│   - ExecuteController   │
-│   - CatalogController   │
+│   - Stats, Logs, Catalog│
+│   - Execution Engine    │
 └───────────┬─────────────┘
             │
 ┌───────────▼─────────────┐
 │   ProcBridge.Engine     │
 │   - ProcBridgeEngine    │
 │   - CatalogService      │
-│   - ParameterMapper     │
 │   - ExecutionLogger     │
 └───────────┬─────────────┘
             │
 ┌───────────▼─────────────┐
 │   SQL Server            │
-│   - ProcCatalog         │
-│   - ProcExecLog         │
-│   - Your SPs            │
+│   - ProcCatalog (Metadata)
+│   - ProcExecLog (Logs)
 └─────────────────────────┘
 ```
 
@@ -139,30 +94,15 @@ Verás:
 
 ```
 ProcBridge/
-├── backend/
-│   ├── ProcBridge.Core/          # Models + Interfaces
-│   │   ├── Models/
-│   │   │   ├── ProcRequest.cs
-│   │   │   ├── ProcResult.cs
-│   │   │   ├── ProcMeta.cs
-│   │   │   └── CatalogEntry.cs
-│   │   └── Interfaces/
-│   │       └── IProcBridge.cs
-│   │
-│   ├── ProcBridge.Engine/        # Motor de ejecución
-│   │   ├── ProcBridgeEngine.cs
-│   │   ├── CatalogService.cs
-│   │   ├── ParameterMapper.cs
-│   │   └── ExecutionLogger.cs
-│   │
-│   └── ProcBridge.API/           # REST API
-│       ├── Controllers/
-│       │   ├── ExecuteController.cs
-│       │   └── CatalogController.cs
-│       ├── Program.cs
-│       └── appsettings.json
+├── backend/              # .NET 8 Web API
+│   ├── ProcBridge.Core/  # Modelos e Interfaces
+│   ├── ProcBridge.Engine/# Lógica de ejecución
+│   └── ProcBridge.API/   # Endpoints REST
 │
-├── database/
+├── frontend/             # Angular 17 App
+│   └── procbridge-admin/ # Admin Panel (PrimeNG)
+│
+├── database/             # SQL Scripts
 │   ├── 01_CreateTables.sql
 │   └── 02_SeedData.sql
 │
@@ -171,88 +111,40 @@ ProcBridge/
 
 ---
 
-## 📝 Ejemplos de Uso
-
-### **Ejemplo 1: Ejecutar SP sin parámetros**
-
-```bash
-curl -X POST https://localhost:5001/api/execute \
-  -H "Content-Type: application/json" \
-  -d '{
-    "procCode": "TEST_ECHO",
-    "payload": { "Message": "Test" }
-  }'
-```
-
-### **Ejemplo 2: Ejecutar SP con filtros**
-
-```bash
-curl -X POST https://localhost:5001/api/execute \
-  -H "Content-Type: application/json" \
-  -d '{
-    "procCode": "GET_USERS",
-    "payload": { "Status": "Active" }
-  }'
-```
-
-### **Ejemplo 3: Crear orden (con transacción)**
-
-```bash
-curl -X POST https://localhost:5001/api/execute \
-  -H "Content-Type: application/json" \
-  -d '{
-    "procCode": "CREATE_ORDER",
-    "payload": {
-      "CustomerId": 123,
-      "ProductId": 456,
-      "Quantity": 2
-    }
-  }'
-```
-
-### **Ejemplo 4: Listar catálogo**
-
-```bash
-curl https://localhost:5001/api/catalog
-```
-
----
-
 ## 🎯 Features
 
 - ✅ **Ejecución dinámica** de SPs via API REST
-- ✅ **Catálogo centralizado** (ProcCatalog)
-- ✅ **Logging automático** de todas las ejecuciones
-- ✅ **Transacciones opcionales** (UseTransaction flag)
-- ✅ **Múltiples ResultSets** (DataSets)
-- ✅ **Swagger/OpenAPI** integrado
-- ✅ **CORS configurado** para Angular
-- ✅ **Tipado fuerte** (.NET models)
+- ✅ **Dashboard Minimalista** con stats reales de la BD
+- ✅ **Playground** con editor JSON y ejecutor
+- ✅ **Catálogo centralizado** (ProcCatalog) con buscador reactivo
+- ✅ **Logging automático** (ProcExecLog)
+- ✅ **Diseño Premium** Dark Mode / Glassmorphism
+- ✅ **Botón Copy JSON** integrado en resultados
 
 ---
 
 ## 🛣️ Roadmap
 
 ### **✅ Fase 1: Backend Core** (Completado)
-- [x] ProcBridge.Core
-- [x] ProcBridge.Engine
-- [x] ProcBridge.API
-- [x] Database scripts
+- [x] Ejecución dinámica y mapeo
+- [x] Logging y Catálogo
 - [x] Swagger UI
 
-### **⏳ Fase 2: Frontend Angular** (Próximamente)
-- [ ] Angular 17 project
-- [ ] Dashboard component
-- [ ] Catalog manager
-- [ ] Playground (Monaco editor)
-- [ ] Logs viewer
+### **✅ Fase 2: Frontend Angular** (Completado)
+- [x] Dashboard con KPIs reales
+- [x] Playground (Editor + Results Viewer)
+- [x] Catalog Manager con filtros
+- [x] Logs Viewer con historial
 
-### **📅 Fase 3: Production Features**
+### **⌛ Fase 3: Security & Identity** (Siguiente)
 - [ ] JWT Authentication
-- [ ] Rate limiting
-- [ ] Caching (Redis)
-- [ ] Health checks
-- [ ] Metrics (OpenTelemetry)
+- [ ] Role-based access control (RBAC)
+- [ ] User management UI
+
+### **📅 Fase 4: Production Polish**
+- [ ] Gráficas dinámicas (ECharts)
+- [ ] Multi-tenancy (SaaS ready)
+- [ ] Dockerization (Backend + Frontend)
 
 ---
 
