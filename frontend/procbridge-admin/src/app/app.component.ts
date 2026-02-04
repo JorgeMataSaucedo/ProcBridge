@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './core/services/auth.service';
+import { UserInfo } from './core/models/auth.models';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <div class="app-layout">
+    <div class="app-layout" *ngIf="!isLoginPage">
       <!-- Icon-only Sidebar -->
       <nav class="sidebar">
         <div class="sidebar-header">
@@ -45,17 +47,24 @@ import { CommonModule } from '@angular/common';
         </div>
         
         <div class="sidebar-footer">
-          <button class="nav-item" title="Settings">
-            <i class="pi pi-cog"></i>
+          <div class="user-info" *ngIf="currentUser" [title]="currentUser.email">
+            <div class="user-avatar">
+              {{ getUserInitials(currentUser.fullName) }}
+            </div>
+          </div>
+          <button class="nav-item logout-btn" title="Logout" (click)="onLogout()">
+            <i class="pi pi-sign-out"></i>
           </button>
         </div>
       </nav>
       
-      <!-- Main Content -->
-      <main class="main-content">
+      <!-- Main Content -->      <main class="main-content">
         <router-outlet></router-outlet>
       </main>
     </div>
+
+    <!-- Login page (full screen) -->
+    <router-outlet *ngIf="isLoginPage"></router-outlet>
   `,
   styles: [`
     .app-layout {
@@ -149,10 +158,42 @@ import { CommonModule } from '@angular/common';
       margin-top: auto;
       padding: 0 0.5rem;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .sidebar-footer .nav-item {
-      margin-bottom: 0;
+    .user-info {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .user-avatar:hover {
+      transform: scale(1.05);
+    }
+
+    .logout-btn {
+      color: var(--accent-red) !important;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.1) !important;
     }
 
     /* Main Content */
@@ -163,7 +204,8 @@ import { CommonModule } from '@angular/common';
     }
 
     /* Tooltip on hover (optional enhancement) */
-    .nav-item:hover::after {
+    .nav-item:hover::after,
+    .user-avatar:hover::after {
       content: attr(title);
       position: absolute;
       left: 100%;
@@ -180,6 +222,39 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'ProcBridge Admin';
+  currentUser: UserInfo | null = null;
+  isLoginPage = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    // Subscribe to current user
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+
+    // Check if current route is login
+    this.router.events.subscribe(() => {
+      this.isLoginPage = this.router.url === '/login';
+    });
+  }
+
+  getUserInitials(fullName: string): string {
+    const names = fullName.split(' ');
+    if (names.length >= 2) {
+      return (names[0][0] + names[1][0]).toUpperCase();
+    }
+    return fullName.substring(0, 2).toUpperCase();
+  }
+
+  onLogout(): void {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/login']);
+    });
+  }
 }
